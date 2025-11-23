@@ -13,6 +13,7 @@ import com.gordoscodigo.barber.Jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 
 
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -25,22 +26,32 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         return http
-            .csrf(csrf ->
-            csrf
-            .disable())
-        .authorizeHttpRequests(authRequest ->
+            .csrf(csrf -> csrf.disable())
+            
+
+
+            .authorizeHttpRequests(authRequest ->
                 authRequest
-                .requestMatchers("/auth/register", "/auth/login").permitAll()
-                .anyRequest().authenticated()
-                )
-            .sessionManagement(sessionManager->
-                sessionManager
-                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authenticationProvider(authProvider)
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .build();
+                    .requestMatchers(
+                        "/auth/register",
+                        "/auth/login",
+                        "/login-page",
+                        "/js/**",
+                        "/css/**"
+                    ).permitAll()
+                    .anyRequest().authenticated()
+            )
 
             
-    }
 
+            .sessionManagement(sessionManager ->
+                sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+
+            .authenticationProvider(authProvider)
+
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+
+            .build();
+    }
 }
